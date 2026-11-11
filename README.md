@@ -1,1 +1,1 @@
-Local Links v14 TEST: hide journey selectors visually; add mobile-friendly fictional ticket demo with decorative non-scannable code. Example ticket catalogue requires confirmation. No payments or real tickets.
+Local Links v16 — ticket list is no longer labelled by zone; adds fictional wallet-style checkout and a separate ticket activation step. NO REAL PAYMENTS, Apple Pay integration, card collection or real QR codes. All demo-only.

@@ -28,9 +28,9 @@
 <section class="section" id="routes"><div class="container"><span class="eyebrow">Our services</span><h2 class="section-title">Routes & timetables.</h2><p class="intro">Find your service across our three operating areas. All timetable links open their original MyBusTimes pages.</p><div class="tabs" id="tabs"><button class="tab active" data-area="all">All services</button><button class="tab" data-area="Oxford">Oxford</button><button class="tab" data-area="South Wales">South Wales</button><button class="tab" data-area="West of England">West of England</button></div><p id="route-count" class="tiny" aria-live="polite"></p><div class="route-grid" id="route-list"></div></div></section>
 <section class="section soft" id="tickets"><div class="container ticket-layout">
 <div><span class="eyebrow">Local Links mobile</span><h2 class="section-title">Tickets on your phone.</h2>
-<p class="intro">Try our fictional mobile ticket experience. Choose a ticket, tap to activate it and see your demonstration QR-style pass.</p>
+<p class="intro">Try our fictional mobile ticket experience. Choose a South Wales ticket, tap to activate it and see your demonstration QR-style pass.</p>
 <p class="ticket-disclaimer">DEMO ONLY — No payment is taken. These tickets and codes are not valid for travel or scanning.</p>
-<p class="tiny">Ticket names and prices are placeholders until the official Local Links ticket list is supplied.</p></div>
+<p class="tiny">Ticket names and prices below are from Local Links South Wales — All Zones. Other regions are not included yet. Demo activation times are illustrative.</p></div>
 <div class="ticket-phone">
 <div class="ticket-phone-head"><span>local<span style="color:#dcec42">links</span>.</span><span>🎫 My tickets</span></div>
 <div id="ticket-shop"><h3>Choose your ticket</h3><label for="ticket-choice">Ticket type</label>
@@ -353,18 +353,22 @@ $('map-route').addEventListener('change',refresh);
 setInterval(()=>{if(map&&document.visibilityState==='visible')refresh()},30000);
 </script><script>
 (function(){
-  // Demonstration-only examples. Replace these with the operator's confirmed products.
+  // Confirmed ticket names and prices from the supplied MyBusTimes South Wales All Zones page.
+  // The demo's activation/expiry rules are illustrative, not proof of real ticket validity.
   const tickets=[
-    {name:'Adult single (demo)',kind:'single',description:'Example single ticket. Expires 20 minutes after activation.'},
-    {name:'Child single (demo)',kind:'single',description:'Example child single. Expires 20 minutes after activation.'},
-    {name:'Adult day (demo)',kind:'day',description:'Example day ticket. Expires at 03:59 the following calendar day.'},
-    {name:'Child day (demo)',kind:'day',description:'Example child day ticket. Expires at 03:59 the following calendar day.'},
-    {name:'Group day (demo)',kind:'day',description:'Example group day ticket. Expires at 03:59 the following calendar day.'}
+    {name:'Child Single',price:'£1.00',kind:'single',description:'Valid for one journey anywhere on our network.'},
+    {name:'Tocyn Cymru',price:'£3.00',kind:'day',description:'Valid on all buses in Wales for one day.'},
+    {name:'Adult Single',price:'£2.20',kind:'single',description:'Valid for one journey exceeding the Cardiff fare zone.'},
+    {name:'Child Return',price:'£2.00',kind:'day',description:'Return ticket. Valid for 1 day.'},
+    {name:'Adult Return',price:'£3.90',kind:'day',description:'Return ticket. Valid for 1 day.'},
+    {name:'All Zones Adult Day',price:'£12.50',kind:'day',description:'All Zones adult day ticket. Valid for 1 day.'},
+    {name:'16-21 MTP Single',price:'£1.00',kind:'single',description:'Single-use ticket.'},
+    {name:'16-21 MTP Return',price:'£2.00',kind:'day',description:'Return ticket. Valid for 1 day.'}
   ];
   const choice=document.getElementById('ticket-choice');
-  tickets.forEach((t,i)=>{const opt=document.createElement('option');opt.value=String(i);opt.textContent=t.name;choice.appendChild(opt)});
+  tickets.forEach((t,i)=>{const opt=document.createElement('option');opt.value=String(i);opt.textContent=t.name+' — '+t.price;choice.appendChild(opt)});
   function selected(){return tickets[Number(choice.value)||0]}
-  function describe(){document.getElementById('ticket-description').textContent=selected().description}
+  function describe(){document.getElementById('ticket-description').textContent=selected().price+' · '+selected().description}
   choice.addEventListener('change',describe);describe();
   const format=d=>new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',weekday:'short',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).format(d);
   // Compute 03:59 on the next UK local calendar day, including DST transitions.
@@ -393,7 +397,7 @@ setInterval(()=>{if(map&&document.visibilityState==='visible')refresh()},30000);
   document.getElementById('ticket-create').addEventListener('click',()=>{
     const t=selected(),start=new Date();
     const expiry=t.kind==='single'?new Date(start.getTime()+20*60000):nextDayExpiry(start);
-    document.getElementById('ticket-pass-name').textContent=t.name;
+    document.getElementById('ticket-pass-name').textContent=t.name+' · '+t.price;
     document.getElementById('ticket-start').textContent=format(start);
     document.getElementById('ticket-expiry').textContent=format(expiry);
     document.getElementById('ticket-shop').hidden=true;
