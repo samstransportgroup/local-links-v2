@@ -1,1 +1,1 @@
-# local-links-v2
+Local Links v11: direction matching fix for City Centre destinations. Selects the central-bound direction rather than the Cribbs Causeway terminus. Journey remains a best estimate, not confirmed vehicle duty.

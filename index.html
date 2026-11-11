@@ -146,15 +146,37 @@ async function showRouteDetail(routeId,label,selectedVehicle=null){
    function minutes(t){const m=String(t||'').match(/^(\d{1,2}):(\d{2})/);return m?Number(m[1])*60+Number(m[2]):null}
    function pickDirection(){
     if(!selectedVehicle)return;
-    const destination=String(selectedVehicle.destination||'').toLowerCase().trim();
-    if(!destination)return;
-    const score=(d)=>{
-     const stops=d.stops||[],last=String(stops[stops.length-1]?.name||'').toLowerCase(),heading=String(d.direction||'').toLowerCase();
-     const target=destination.replace(/\s+(station|bus station|centre|center)\b/g,'').trim();
-     return (last.includes(destination)?10:0)+(heading.endsWith(destination)?9:0)+(target&&last.includes(target)?6:0)+(target&&heading.includes(target)?2:0);
-    };
-    let best=0;for(let i=1;i<directions.length;i++)if(score(directions[i])>score(directions[best]))best=i;
-    if(score(directions[best])>0)dir.value=String(best);
+    const raw=String(selectedVehicle.destination||'').toLowerCase().trim();
+    if(!raw)return;
+    const norm=x=>String(x||'').toLowerCase().replace(/\([^)]*\)/g,' ').replace(/[^a-z0-9 ]/g,' ').replace(/\b(bus station|railway station|station|stop|the)\b/g,' ').replace(/\s+/g,' ').trim();
+    const target=norm(raw);
+    // City Centre is a generic destination on several routes: match central-city stops
+    // rather than incorrectly selecting the opposite terminal.
+    const centre=/\b(city centre|city center|town centre|town center)\b/.test(raw);
+    const centreNames=['city centre','city center','town centre','town center','centre','center','broadmead','the centre','bristol bus station','bristol city','bristol'];
+    function score(d){
+     const stops=d.stops||[];if(!stops.length)return -1;
+     const last=norm(stops[stops.length-1].name),first=norm(stops[0].name),heading=norm(d.direction);
+     let n=0;
+     if(target&&(last===target||last.includes(target)))n+=30;
+     if(target&&(heading.endsWith(target)||heading.includes('to '+target)))n+=16;
+     if(target&&last.includes(target.split(' ')[0]))n+=3;
+     if(centre){
+      if(centreNames.some(t=>last.includes(t)))n+=24;
+      if(centreNames.some(t=>heading.endsWith(t)||heading.includes('to '+t)))n+=12;
+      if(/cribbs causeway/.test(last))n-=35;
+      if(/cribbs causeway/.test(first)&&!(/cribbs causeway/.test(last)))n+=8;
+     }
+     return n;
+    }
+    const scores=directions.map(score);
+    let best=0;for(let i=1;i<scores.length;i++)if(scores[i]>scores[best])best=i;
+    if(scores[best]>0)dir.value=String(best);
+    else if(centre&&directions.length===2){
+     // For a two-way service, avoid displaying a Cribbs-bound timetable for City Centre.
+     const away=directions.findIndex(d=>/cribbs causeway/i.test(String(d.stops?.at(-1)?.name||'')));
+     if(away>=0)dir.value=String(1-away);
+    }
    }
    function pickJourney(stops){
     const count=Math.max(0,...stops.map(s=>(s.times||[]).length));
