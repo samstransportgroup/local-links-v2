@@ -19,8 +19,17 @@
 #ticket-qr{width:232px;height:232px;max-width:100%;image-rendering:pixelated}
 .ticket-demo-stamp{text-align:center;font-size:12px;font-weight:900;letter-spacing:1px;color:#a24a00}
 @media(max-width:700px){.ticket-layout{grid-template-columns:1fr;gap:24px}.ticket-phone{border-width:5px}}
+</style><style>
+.buy-tickets-nav{background:#e8f444;color:#142b36!important;border-radius:22px;padding:10px 15px!important;font-weight:900;white-space:nowrap}
+#ticket-checkout,#ticket-confirmed{padding:23px}
+#ticket-checkout h3,#ticket-confirmed h3{font-size:23px;margin:0 0 18px}
+.checkout-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-top:1px solid #e1e6e5;border-bottom:1px solid #e1e6e5}
+.checkout-summary strong{font-size:23px}
+.checkout-warning{font-size:13px;line-height:1.5;background:#fff4ce;padding:12px;border-radius:9px;margin:18px 0}
+.demo-pay{background:#142b36!important;color:white!important;border-radius:12px!important}
+#ticket-confirmed p{line-height:1.5}
 </style></head><body>
-<div class="topline">LOCAL LINKS • A FICTIONAL TRANSPORT NETWORK ON MYBUSTIMES</div><header class="header"><div class="container header-inner"><a class="brand" href="#home"><span class="brand-icon">↗</span><span>local<span>links</span>.</span></a><nav class="nav" aria-label="Main navigation"><a href="#home">Home</a><a href="#routes">Routes & timetables</a><a href="#tracking">Track a bus</a><a href="#tickets">Mobile tickets</a><a href="#about">Our network</a><a class="pill" href="https://discord.gg/g4uw7vBup8" target="_blank" rel="noopener">Support ↗</a></nav></div></header>
+<div class="topline">LOCAL LINKS • A FICTIONAL TRANSPORT NETWORK ON MYBUSTIMES</div><header class="header"><div class="container header-inner"><a class="brand" href="#home"><span class="brand-icon">↗</span><span>local<span>links</span>.</span></a><nav class="nav" aria-label="Main navigation"><a href="#home">Home</a><a href="#routes">Routes & timetables</a><a href="#tracking">Track a bus</a><a class="buy-tickets-nav" href="#tickets">🎫 Buy Tickets</a><a href="#about">Our network</a><a class="pill" href="https://discord.gg/g4uw7vBup8" target="_blank" rel="noopener">Support ↗</a></nav></div></header>
 <main><section class="hero" id="home"><div class="container hero-grid"><div><div class="eyebrow">Welcome aboard Local Links</div><h1>Going places.<br><em>Together.</em></h1><p>Discover our fictional bus network across Oxford, South Wales and the West of England. Find services, explore timetables and follow simulated vehicles.</p><div class="actions"><a class="button" href="#routes">Find your route →</a><a class="button secondary" href="#tracking">Explore live map ↗</a></div></div><div class="hero-card"><span class="eyebrow">Explore the network</span><div class="hero-road">🚌</div><span class="route-pill">X1</span><h3>More connections.<br>More possibilities.</h3><p>One network. Three operating areas. Timetables powered by MyBusTimes.</p></div></div></section>
 <div class="container finder"><form id="finder" class="finder-box"><h2 class="finder-title">Where are you travelling?</h2><div class="searchgrid"><select class="field" id="finder-area" aria-label="Operating area"><option value="all">All operating areas</option><option>Oxford</option><option>South Wales</option><option>West of England</option></select><input class="field" id="finder-query" placeholder="Route number or destination e.g. X6, Bristol" aria-label="Route or destination"><button class="button" type="submit">Find routes →</button></div></form></div>
 <section class="section" id="about"><div class="container"><span class="eyebrow">Your network, connected</span><h2 class="section-title">Travel information, made simple.</h2><p class="intro">A fresh, modern home for the Local Links community transport simulation. Inspired by contemporary UK bus operators, designed with our own distinctive identity.</p><div class="features"><article class="feature"><div class="emoji">🗺️</div><h3>Explore routes</h3><p>Find routes by number, destination or region, with direct links to their MyBusTimes timetables.</p><a href="#routes"><strong>Browse routes →</strong></a></article><article class="feature"><div class="emoji">📍</div><h3>Simulated tracking</h3><p>Explore the network on a map and display simulated bus positions when the MyBusTimes feed is available.</p><a href="#tracking"><strong>Open map →</strong></a></article><article class="feature"><div class="emoji">💬</div><h3>Here to help</h3><p>Need assistance or want to get involved? Join our community support server on Discord.</p><a href="https://discord.gg/g4uw7vBup8" target="_blank" rel="noopener"><strong>Get support ↗</strong></a></article></div></div></section>
@@ -28,15 +37,25 @@
 <section class="section" id="routes"><div class="container"><span class="eyebrow">Our services</span><h2 class="section-title">Routes & timetables.</h2><p class="intro">Find your service across our three operating areas. All timetable links open their original MyBusTimes pages.</p><div class="tabs" id="tabs"><button class="tab active" data-area="all">All services</button><button class="tab" data-area="Oxford">Oxford</button><button class="tab" data-area="South Wales">South Wales</button><button class="tab" data-area="West of England">West of England</button></div><p id="route-count" class="tiny" aria-live="polite"></p><div class="route-grid" id="route-list"></div></div></section>
 <section class="section soft" id="tickets"><div class="container ticket-layout">
 <div><span class="eyebrow">Local Links mobile</span><h2 class="section-title">Tickets on your phone.</h2>
-<p class="intro">Try our fictional mobile ticket experience. Choose a South Wales ticket, tap to activate it and see your demonstration QR-style pass.</p>
+<p class="intro">Try our fictional mobile ticket experience. Choose a ticket, complete the pretend wallet checkout and activate your demonstration pass.</p>
 <p class="ticket-disclaimer">DEMO ONLY — No payment is taken. These tickets and codes are not valid for travel or scanning.</p>
-<p class="tiny">Ticket names and prices below are from Local Links South Wales — All Zones. Other regions are not included yet. Demo activation times are illustrative.</p></div>
+<p class="tiny">Ticket names and prices come from your supplied ticket list. The checkout is fictional.</p></div>
 <div class="ticket-phone">
 <div class="ticket-phone-head"><span>local<span style="color:#dcec42">links</span>.</span><span>🎫 My tickets</span></div>
 <div id="ticket-shop"><h3>Choose your ticket</h3><label for="ticket-choice">Ticket type</label>
 <select id="ticket-choice" class="ticket-input"></select>
 <div id="ticket-description" class="ticket-description"></div>
-<button id="ticket-create" class="ticket-action" type="button">Get free demo ticket</button></div>
+<button id="ticket-create" class="ticket-action" type="button">Continue to demo checkout</button></div>
+<div id="ticket-checkout" hidden>
+<h3>Demo checkout</h3><div class="checkout-summary"><span id="checkout-name"></span><strong id="checkout-price"></strong></div>
+<p class="checkout-warning">DEMO ONLY — no payment, Apple Pay connection or bank details.</p>
+<button id="demo-pay" class="ticket-action demo-pay" type="button">▣ Pay with Demo Wallet</button>
+<button id="checkout-back" class="ticket-action secondary" type="button">Back</button>
+</div>
+<div id="ticket-confirmed" hidden aria-live="polite"><h3>✓ Demo payment successful</h3>
+<p>No money was taken. Activate your pretend ticket below.</p>
+<button id="ticket-activate" class="ticket-action" type="button">Activate demo ticket</button>
+<button id="confirmed-back" class="ticket-action secondary" type="button">Choose another ticket</button></div>
 <div id="ticket-pass" hidden aria-live="polite"><div class="ticket-pass-top">LOCAL LINKS <span>SIMULATION</span></div>
 <h3 id="ticket-pass-name"></h3><div class="ticket-validity">Demo ticket · Not valid for travel</div>
 <div class="ticket-time"><small>Activated</small><strong id="ticket-start"></strong></div>
@@ -394,19 +413,29 @@ setInterval(()=>{if(map&&document.visibilityState==='visible')refresh()},30000);
     ctx.fillStyle='rgba(160,60,0,.9)';ctx.fillRect(0,103,232,26);
     ctx.fillStyle='#fff';ctx.font='bold 14px sans-serif';ctx.textAlign='center';ctx.fillText('DEMO ONLY',116,121);
   }
+  const shop=document.getElementById('ticket-shop');
+  const checkout=document.getElementById('ticket-checkout');
+  const confirmed=document.getElementById('ticket-confirmed');
+  const pass=document.getElementById('ticket-pass');
+  let purchasedTicket=null;
+  function show(view){[shop,checkout,confirmed,pass].forEach(el=>{el.hidden=el!==view});}
   document.getElementById('ticket-create').addEventListener('click',()=>{
-    const t=selected(),start=new Date();
+    purchasedTicket=selected();
+    document.getElementById('checkout-name').textContent=purchasedTicket.name;
+    document.getElementById('checkout-price').textContent=purchasedTicket.price;
+    show(checkout);
+  });
+  document.getElementById('checkout-back').addEventListener('click',()=>show(shop));
+  document.getElementById('confirmed-back').addEventListener('click',()=>show(shop));
+  document.getElementById('demo-pay').addEventListener('click',()=>show(confirmed));
+  document.getElementById('ticket-activate').addEventListener('click',()=>{
+    const t=purchasedTicket||selected(),start=new Date();
     const expiry=t.kind==='single'?new Date(start.getTime()+20*60000):nextDayExpiry(start);
     document.getElementById('ticket-pass-name').textContent=t.name+' · '+t.price;
     document.getElementById('ticket-start').textContent=format(start);
     document.getElementById('ticket-expiry').textContent=format(expiry);
-    document.getElementById('ticket-shop').hidden=true;
-    document.getElementById('ticket-pass').hidden=false;
-    drawDecorativeCode();
+    show(pass);drawDecorativeCode();
   });
-  document.getElementById('ticket-again').addEventListener('click',()=>{
-    document.getElementById('ticket-pass').hidden=true;
-    document.getElementById('ticket-shop').hidden=false;
-  });
+  document.getElementById('ticket-again').addEventListener('click',()=>show(shop));
 })();
 </script></body></html>

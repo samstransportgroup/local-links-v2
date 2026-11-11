@@ -1,1 +1,1 @@
-Local Links v16 — ticket list is no longer labelled by zone; adds fictional wallet-style checkout and a separate ticket activation step. NO REAL PAYMENTS, Apple Pay integration, card collection or real QR codes. All demo-only.
+v17: Visible Buy Tickets navigation button and working 3-step fictional checkout: select ticket > Pay with Demo Wallet > activate pass. No payment details or real Apple Pay. Only test site.
