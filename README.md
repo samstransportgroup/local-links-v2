@@ -1,1 +1,1 @@
-Local Links v13: remove automatic journey explanatory paragraph and show circular vehicle markers styled from the MyBusTimes vehicle livery colour/CSS, with route number. The live livery feed determines the colours; unavailable liveries fall back to white. Deploy to TEST Netlify only.
+Local Links v14 TEST: hide journey selectors visually; add mobile-friendly fictional ticket demo with decorative non-scannable code. Example ticket catalogue requires confirmation. No payments or real tickets.
