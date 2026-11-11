@@ -1,3 +1,1 @@
-# Local Links v12 — Previous Stops & Stop Name Cleanup
-
-When viewing a selected vehicle, scheduled stops before the current UK time are collapsed under **Previous stops**. This is an estimate based on the selected timetable journey, not confirmed stop history. Also cleans common encoding artifacts in stop names. Deploy only to the test site.
+Local Links v13: remove automatic journey explanatory paragraph and show circular vehicle markers styled from the MyBusTimes vehicle livery colour/CSS, with route number. The live livery feed determines the colours; unavailable liveries fall back to white. Deploy to TEST Netlify only.
