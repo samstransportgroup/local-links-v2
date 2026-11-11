@@ -1,0 +1,16 @@
+LOCAL LINKS - AUTOMATIC ROUTES AND STOP MAP (TEST VERSION)
+
+New:
+- Fetches Local Links group route catalogue through a Netlify function.
+- Retains bundled routes if the MyBusTimes catalogue cannot be reached.
+- Click "View stops" on a route, or "Show full route & stops" in a vehicle popup.
+- Highlights the route line and plots bus stops when MyBusTimes provides coordinates.
+- Shows scheduled stop times ONLY if MyBusTimes actually returns time fields.
+- Existing simulated vehicle tracker and 30-second refresh are preserved.
+
+Important limitations:
+- MyBusTimes route-list API schema and timetable fields have not been verified live.
+- Automatic route classification depends on operator/area metadata in the API.
+- Stop times are NOT estimated or invented. If the API supplies no times, the site says "Time not supplied".
+- Deploy this to the TEST Netlify site first, not the original production site.
+- GitHub/Netlify must deploy with serverless functions enabled; opening index.html locally won't provide API access.
