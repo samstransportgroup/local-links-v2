@@ -74,13 +74,28 @@ function selectStop(index,fly=true){
  if(marker){if(fly)map.flyTo({center:marker.getLngLat(),zoom:Math.max(map.getZoom(),15),essential:true});marker.togglePopup();}
 }
 function vehicleKey(v){return String(v.vehicle?.url||v.vehicle?.id||v.vehicle?.name||'')+'|'+String(v.service?.line_name||'')+'|'+String(v.destination||'');}
-function focusBus(v){focusedVehicle=vehicleKey(v);$('vehicle-focus').hidden=false;renderVehicles(lastVehicles);}
+function routeIdForVehicle(v){
+ const service=v.service||{};
+ const direct=String(service.url||'').match(/\/route\/(\d+)/);
+ if(direct)return direct[1];
+ const line=String(service.line_name||'').trim().toLowerCase();
+ const destination=String(v.destination||'').trim().toLowerCase();
+ const matches=Object.values(ROUTES).flat().filter(r=>String(r[0]).trim().toLowerCase()===line);
+ const selected=matches.find(r=>destination&&String(r[1]||'').toLowerCase().includes(destination))||matches[0];
+ return selected?(String(selected[4]||'')||((String(selected[2]||'').match(/\/route\/(\d+)/)||[])[1])):null;
+}
+function focusBus(v){
+ focusedVehicle=vehicleKey(v);$('vehicle-focus').hidden=false;renderVehicles(lastVehicles);
+ const id=routeIdForVehicle(v);
+ if(id)showRouteDetail(id,String(v.service?.line_name||'Service'),v);
+ else {const panel=$('service-detail');panel.hidden=false;panel.textContent='This bus has no matching route ID in the tracking feed.';}
+}
 function renderVehicles(data){
  clearMarkers();let shown=0;const route=$('map-route').value.trim().toLowerCase();
  for(const v of data){const label=String(v.service?.line_name||'');if(route&&!label.toLowerCase().includes(route))continue;if(focusedVehicle&&vehicleKey(v)!==focusedVehicle)continue;const pos=coords(v);if(!pos)continue;
  const el=document.createElement('div');el.className='vehicle-marker';el.textContent='🚌';el.title='Select '+(label||'Local Links vehicle');
  const marker=new maplibregl.Marker({element:el}).setLngLat(pos).setPopup(new maplibregl.Popup({offset:20}).setHTML(popup(v))).addTo(map);
- el.addEventListener('click',()=>{if(focusedVehicle!==vehicleKey(v))focusBus(v)});
+ el.addEventListener('click',()=>{focusBus(v)});
  markers.push(marker);shown++;
  }
  return shown;
@@ -127,13 +142,46 @@ async function showRouteDetail(routeId,label,selectedVehicle=null){
    const date=document.createElement('select');date.setAttribute('aria-label','Timetable date');for(const d of timetable.availableDates||[]){const opt=document.createElement('option');opt.value=d;opt.textContent=d;date.appendChild(opt)}if(timetable.date)date.value=timetable.date;tools.appendChild(date);
    panel.appendChild(tools);
    dir.onchange=()=>renderTimetable();trip.onchange=()=>renderTimetable(false);date.onchange=async()=>{const response=await fetch('/.netlify/functions/route-timetable?id='+encodeURIComponent(routeId)+'&operator='+encodeURIComponent(slug)+'&date='+encodeURIComponent(date.value));if(response.ok){timetable=await response.json();renderTimetable(true)}};
+   const autoNote=document.createElement('p');autoNote.className='detail-note';tools.after(autoNote);
+   function minutes(t){const m=String(t||'').match(/^(\d{1,2}):(\d{2})/);return m?Number(m[1])*60+Number(m[2]):null}
+   function pickDirection(){
+    if(!selectedVehicle)return;
+    const destination=String(selectedVehicle.destination||'').toLowerCase().trim();
+    if(!destination)return;
+    const score=(d)=>{
+     const stops=d.stops||[],last=String(stops[stops.length-1]?.name||'').toLowerCase(),heading=String(d.direction||'').toLowerCase();
+     const target=destination.replace(/\s+(station|bus station|centre|center)\b/g,'').trim();
+     return (last.includes(destination)?10:0)+(heading.endsWith(destination)?9:0)+(target&&last.includes(target)?6:0)+(target&&heading.includes(target)?2:0);
+    };
+    let best=0;for(let i=1;i<directions.length;i++)if(score(directions[i])>score(directions[best]))best=i;
+    if(score(directions[best])>0)dir.value=String(best);
+   }
+   function pickJourney(stops){
+    const count=Math.max(0,...stops.map(s=>(s.times||[]).length));
+    if(!selectedVehicle||!count)return 0;
+    const now=new Date();const current=now.getHours()*60+now.getMinutes();
+    let best=0,bestScore=Infinity;
+    for(let i=0;i<count;i++){
+     const first=stops.map(s=>minutes(s.times?.[i])).find(x=>x!==null);
+     const end=[...stops].reverse().map(s=>minutes(s.times?.[i])).find(x=>x!==null);
+     if(first===undefined||end===undefined)continue;
+     // Prefer a trip currently in progress; otherwise choose the next departure.
+     const running=first<=current&&current<=end;
+     const score=running?(current-first)*0.01: first>=current?100+(first-current):1000+(current-end);
+     if(score<bestScore){bestScore=score;best=i;}
+    }
+    return best;
+   }
    function renderTimetable(resetTrip=true){
     const stops=directionsForCurrent();
-    if(resetTrip){trip.innerHTML='';const count=Math.max(0,...stops.map(s=>s.times.length));for(let i=0;i<count;i++){const opt=document.createElement('option');opt.value=i;opt.textContent='Journey '+(i+1)+' · '+(stops[0]?.times[i]||'—');trip.appendChild(opt)}}
+    if(resetTrip){trip.innerHTML='';const count=Math.max(0,...stops.map(s=>(s.times||[]).length));for(let i=0;i<count;i++){const opt=document.createElement('option');opt.value=i;opt.textContent='Journey '+(i+1)+' · '+(stops[0]?.times[i]||'—');trip.appendChild(opt)}
+     trip.value=String(pickJourney(stops));
+    }
+    autoNote.textContent=selectedVehicle?'Journey selected using the bus destination and current schedule (best estimate, not a confirmed vehicle duty). You can change it above.':'';
     renderStopList(stops,Number(trip.value||0));
    }
    function directionsForCurrent(){return (timetable.directions||[])[Number(dir.value||0)]?.stops||[]}
-   renderTimetable();
+   pickDirection();renderTimetable();
   }else{renderStopList(geoStops.map((s,i)=>({name:stopName(s,i),times:[]})),0)}
   function renderStopList(stops,journey){
    detailMarkers.forEach(m=>m?.remove());detailMarkers=[];

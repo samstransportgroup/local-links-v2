@@ -1,9 +1,1 @@
-Local Links v8 — All Stops + Timetable (test build)
-
-This version reads all timetable rows from MyBusTimes service pages, including minor stops hidden when "Timing Points" is selected.
-- Direction and scheduled journey selection.
-- Date selection based on the dates offered by MyBusTimes.
-- Bus type/fleet/registration displayed when available from the vehicle tracking feed (otherwise explicitly marked unavailable).
-- Route geometry preserved; clickable stop markers only matched to timetable names when the two stop sequences can be reliably paired.
-
-Important: This is a test build. Live MyBusTimes fetching, schedule variations, route-to-operator mapping, and stop geometry alignment must be tested on Netlify. Scheduled times are NOT live arrival predictions. MyBusTimes is fictional.
+v10: Clicking a bus opens its stop list immediately; auto-selects a likely direction and scheduled trip from destination and current time. The match is an estimate because the feed does not provide a verified trip ID.
